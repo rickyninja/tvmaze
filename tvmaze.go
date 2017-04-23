@@ -25,12 +25,12 @@ type Client struct {
 	*http.Client
 }
 
-func New(cachefile string) *Client {
+func NewClient(cachefile string) (*Client, error) {
 	c := cache.New(time.Minute*60*24*7, time.Minute*60)
 	if _, err := os.Stat(cachefile); err == nil {
 		err := c.LoadFile(cachefile)
 		if err != nil {
-			log.Println("Failed to load cache from file: " + cachefile)
+			return nil, err
 		}
 	}
 
@@ -44,14 +44,15 @@ func New(cachefile string) *Client {
 		CacheFile: cachefile,
 		BaseURI:   "http://api.tvmaze.com",
 		Client:    client,
-	}
+	}, nil
 }
 
-func (c *Client) WriteCache() {
+func (c *Client) WriteCache() error {
 	err := c.Cache.SaveFile(c.CacheFile)
 	if err != nil {
-		log.Println(err.Error())
+		return err
 	}
+	return nil
 }
 
 func (c *Client) FindShow(showname string) (Show, error) {
