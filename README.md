@@ -28,6 +28,8 @@ type Client struct {
 	CacheFile string
 	UseCache  bool
 	*http.Client
+	// UserAgent may be set to identify your application.
+	UserAgent string
 }
 ```
 

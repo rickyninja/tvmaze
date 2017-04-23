@@ -25,6 +25,8 @@ type Client struct {
 	CacheFile string
 	UseCache  bool
 	*http.Client
+	// UserAgent may be set to identify your application.
+	UserAgent string
 }
 
 // NewClient returns a ready to use Client.
@@ -47,6 +49,7 @@ func NewClient(cachefile string) (*Client, error) {
 		CacheFile: cachefile,
 		BaseURI:   "http://api.tvmaze.com",
 		Client:    client,
+		UserAgent: "github.com/rickyninja/tvmaze",
 	}, nil
 }
 
@@ -148,6 +151,9 @@ func (c *Client) Go(uri *url.URL) ([]byte, error) {
 		request, err := http.NewRequest("GET", uri.String(), nil)
 		if err != nil {
 			return nil, err
+		}
+		if c.UserAgent != "" {
+			request.Header.Set("User-Agent", c.UserAgent)
 		}
 
 		resp, err := c.Do(request)
