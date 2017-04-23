@@ -1,3 +1,4 @@
+// Package tvmaze is an HTTP Client for the tvmaze API.
 package tvmaze
 
 import (
